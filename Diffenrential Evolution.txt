@@ -1,0 +1,76 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Jun  9 07:27:42 2022
+
+@author: Hendry
+"""
+
+import random
+#%%
+# y = 15x - x^2
+N = 3
+CR = 0.7
+F = 0.5
+
+#DE/rand/1/uniform 
+#    -> vektor basis acak, 1 vektor difference, CR->uniform 
+induk = [0 for i in range(N)]
+print (induk)
+
+#1. Membangkitkan populasi awal
+BU = 15
+BL = 0
+
+for i in range(N):
+    induk[i] = random.random() * ((BU-BL) + BL)
+print(induk)
+#%%
+def hitungFitness(x):
+    y = 15*x - x*x
+    return y
+#%%
+#2. definisi variable epochs dan counter (ctr)
+ctr=1
+epochs = 50
+MaxFitness = [0 for i in range(epochs)]
+print(MaxFitness)
+
+#Hitung dulu nilai fitness untuk induk
+for j in range(N):
+    if (hitungFitness(induk[j])>MaxFitness[0]):
+        MaxFitness[0] = hitungFitness(induk[j])
+print(MaxFitness)
+#3. While sebelum kriteria berhenti
+#seleksi -> reproduksi -> elitism
+D=1
+while ctr<epochs:
+    for i in range(N):
+        jrand = int(random.random()*D)#+1
+        for j in range(D):
+            #reproduksi
+            a = random.random()
+            #Cek Crossover
+            if (a<=CR or j==jrand):
+                #Mutasi
+                #Mengambil vektor basis secara acak (#Seleksi)
+                xr = induk[random.randint(0,(N-1))]
+                anak = xr + F*induk[i]
+            else:
+                anak = induk[i]
+        #Elitsm 
+        if (hitungFitness(anak)>hitungFitness(induk[i])):
+            induk[i] = anak
+    print(induk)
+    
+    for i in range(N):
+        if (hitungFitness(induk[i])>MaxFitness[ctr]):
+            MaxFitness[ctr] = hitungFitness(induk[i])
+            print(MaxFitness[ctr])
+    ctr+=1
+#%%
+#Output
+x = range(epochs)
+print (x)
+import matplotlib.pyplot as plt
+plt.plot(x, MaxFitness, label='Max')
+plt.legend(True)
